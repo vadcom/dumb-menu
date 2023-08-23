@@ -1,0 +1,20 @@
+text: MainMenu
+type: list
+leave: exit
+items:
+  - text: Start
+    event: run
+  - text: Option
+    type: scroll
+    items:
+      - text: First
+      - text: Second
+      - text: Third
+  - text: SubMenu
+    type: list
+    items:
+      - text: one
+      - text: two
+      - text: three
+  - text: Exit
+    event : exit
