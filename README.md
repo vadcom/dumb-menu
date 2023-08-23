@@ -1,5 +1,3 @@
-# Dump Menu
+# dumb-menu
 
-This library has created to help 
-developers create their own 
-non-standard menu.
+If you're seeking a menu for your pet project, you'll find it right here.
