@@ -1,20 +1,25 @@
 text: MainMenu
-type: list
+type: submenu
 leave: exit
 items:
   - text: Start
     event: run
   - text: Option
-    type: scroll
+    type: option
     items:
       - text: First
       - text: Second
       - text: Third
   - text: SubMenu
-    type: list
+    type: submenu
     items:
       - text: one
       - text: two
       - text: three
+  - text: Sound Volume
+    type: value
+    default: 5
+    from: 0
+    to: 10
   - text: Exit
     event : exit

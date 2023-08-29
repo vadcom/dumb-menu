@@ -23,7 +23,7 @@ public class DumbMenu {
 
     public DumbMenu(Reader inStream, MenuListener listener) {
         Yaml yaml = new Yaml();
-        this.mainLevel = new MenuLevel(yaml.load(inStream));
+        this.mainLevel = MenuLevel.create(yaml.load(inStream));
         this.listener = listener;
         levels.push(mainLevel);
     }
@@ -31,11 +31,12 @@ public class DumbMenu {
     public void init() {
         traversOptions(mainLevel);
     }
+
     private void traversOptions(MenuLevel menuLevel) {
-        for (MenuLevel item:menuLevel.getItems()) {
-            if (MenuType.scroll.equals(item.type)) {
-                listener.onEvent(new MenuEvent(item.event,item.getActiveItem().event));
-            } else if (MenuType.list.equals(item.type)) {
+        for (MenuLevel item : menuLevel.getItems()) {
+            if (MenuType.option.equals(item.type)) {
+                listener.onEvent(new MenuEvent(item.event, item.getParam()));
+            } else if (MenuType.submenu.equals(item.type)) {
                 traversOptions(item);
             }
         }
@@ -46,33 +47,36 @@ public class DumbMenu {
         var activeItem = activeLevel.getActiveItem();
         switch (menuAction) {
             case Enter -> {
-                if (activeItem.type == MenuType.action) {
-                    listener.onEvent(new MenuEvent(activeItem.event, ""));
-                }
-                if (activeItem.type == MenuType.scroll) {
-                    activeItem.next();
-                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getActiveItem().event));
-                }
-                if (activeItem.type == MenuType.list) {
-                    activeItem.resetActive();
-                    levels.push(activeItem);
+                switch (activeItem.type) {
+
+                    case action -> {
+                        listener.onEvent(new MenuEvent(activeItem.event, ""));
+                    }
+                    case submenu -> {
+                        activeItem.resetActive();
+                        levels.push(activeItem);
+                    }
+                    case option, value -> {
+                        activeItem.next();
+                        listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
+                    }
                 }
             }
             case Back -> {
                 MenuLevel menuLevel = levels.pop();
-                if (menuLevel.leave!=null) {
+                if (menuLevel.leave != null) {
                     listener.onEvent(new MenuEvent(menuLevel.leave));
                 }
             }
             case Next -> activeLevel.next();
             case Previous -> activeLevel.previous();
             case ScrollNext -> {
-                if (activeItem.type.equals(MenuType.scroll)) {
+                if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.next();
                 }
             }
             case ScrollPrevious -> {
-                if (activeItem.type.equals(MenuType.scroll)) {
+                if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.previous();
                 }
             }

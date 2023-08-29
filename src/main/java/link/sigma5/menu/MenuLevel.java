@@ -15,7 +15,16 @@ public class MenuLevel {
 
     List<MenuLevel> items;
     int activeItemIndex;
-    public MenuLevel(Map<String, Object> map) {
+
+    public static MenuLevel create(Map<String, Object> map) {
+        Object stringType = map.get("type");
+        MenuType type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
+        return switch (type) {
+            case value ->  new MenuLevelValue(map);
+            default -> new MenuLevel( map);
+        };
+    }
+    protected MenuLevel(Map<String, Object> map) {
         Object stringType = map.get("type");
         this.type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
         this.text = (String) map.get("text");
@@ -32,12 +41,12 @@ public class MenuLevel {
         Object itemsList = map.get("items");
         if (itemsList instanceof List list) {
             for (Map<String, Object> item : (List<Map<String, Object>>) list) {
-                items.add(new MenuLevel(item));
+                items.add(MenuLevel.create(item));
             }
         }
     }
     public MenuLevel getActiveItem() {
-        return items.get(activeItemIndex);
+        return activeItemIndex<items.size()?items.get(activeItemIndex):null;
     }
 
     public int getItemCount() {
@@ -46,7 +55,7 @@ public class MenuLevel {
 
     public List<MenuItemView> getItemsText() {
         return items.stream()
-                .map(menuLevel -> new MenuItemView(getActiveItem().equals(menuLevel), menuLevel.getText(), menuLevel.type.equals(MenuType.scroll)?menuLevel.items.get(menuLevel.activeItemIndex).getText():""))
+                .map(menuLevel -> menuLevel.getItemView(menuLevel.equals(getActiveItem())))
                 .toList();
     }
 
@@ -68,8 +77,16 @@ public class MenuLevel {
         return text;
     }
 
+    public MenuItemView getItemView(boolean active) {
+        return new MenuItemView(active, getText(), type.equals(MenuType.option)?items.get(activeItemIndex).getText():"");
+    }
+
     List<MenuLevel> getItems() {
         return items;
+    }
+
+    String getParam() {
+        return getActiveItem()==null?"":getActiveItem().event;
     }
 
 

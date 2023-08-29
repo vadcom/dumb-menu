@@ -2,7 +2,8 @@ package link.sigma5.menu;
 
 public enum MenuType {
     action,
-    list,
-    scroll,
+    submenu,
+    option,
+    value,
     custom
 }
