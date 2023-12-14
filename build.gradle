@@ -1,9 +1,11 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'link.sigma5'
 version '1.0-SNAPSHOT'
+description 'Core menu'
 
 repositories {
     //mavenLocal()
@@ -14,6 +16,15 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
     implementation 'org.yaml:snakeyaml:2.0'
+}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'link.sigma5'
+            artifactId 'dumb-menu'
+            from components.java
+        }
+    }
 }
 
 test {

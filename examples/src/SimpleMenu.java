@@ -11,7 +11,6 @@ import static java.awt.event.KeyEvent.*;
 public class SimpleMenu extends Frame implements MenuListener, KeyListener {
 
     private final DumbMenu menu = new DumbMenu("SimpleMenu.yaml", this);
-    ;
     private final Font font = new Font("DIALOG", Font.BOLD, 26);
     private final JLabel optionsLabel;
 
