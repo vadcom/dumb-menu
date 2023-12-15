@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 public class DumbMenu {
     enum DrawMode {AllLevels, LastLevel}
@@ -16,6 +17,8 @@ public class DumbMenu {
     MenuLevel mainLevel;
     MenuListener listener;
     DrawMode drawMode = DrawMode.LastLevel;
+
+    Preferences prefs = Preferences.userNodeForPackage(DumbMenu.class);
 
     public DumbMenu(String resource, MenuListener listener) throws IOException {
         this(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(resource))), listener);
@@ -34,7 +37,10 @@ public class DumbMenu {
 
     private void traversOptions(MenuLevel menuLevel) {
         for (MenuLevel item : menuLevel.getItems()) {
-            if (MenuType.option.equals(item.type)) {
+            if (item.isSelectable()) {
+                if (item.isPersistence()) {
+                    item.setParam(prefs.get(item.event, item.getParam()));
+                }
                 listener.onEvent(new MenuEvent(item.event, item.getParam()));
             } else if (MenuType.submenu.equals(item.type)) {
                 traversOptions(item);
@@ -58,6 +64,7 @@ public class DumbMenu {
                     }
                     case option, value -> {
                         activeItem.next();
+                        prefs.put(activeItem.event, activeItem.getParam());
                         listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
                     }
                 }
@@ -73,11 +80,15 @@ public class DumbMenu {
             case ScrollNext -> {
                 if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.next();
+                    prefs.put(activeItem.event, activeItem.getParam());
+                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
                 }
             }
             case ScrollPrevious -> {
                 if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.previous();
+                    prefs.put(activeItem.event, activeItem.getParam());
+                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
                 }
             }
         }

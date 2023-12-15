@@ -37,4 +37,9 @@ public class MenuLevelValue extends MenuLevel{
     String getParam() {
         return String.valueOf(value);
     }
+
+    @Override
+    public void setParam(String param) {
+        value=Integer.parseInt(param);
+    }
 }

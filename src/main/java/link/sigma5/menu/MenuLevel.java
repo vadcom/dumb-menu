@@ -12,6 +12,7 @@ public class MenuLevel {
     String text;
     String event; // By default it's menu text
     String leave; // By default it's menu text
+    boolean persistence; // True if we need to save this value
 
     List<MenuLevel> items;
     int activeItemIndex;
@@ -24,6 +25,11 @@ public class MenuLevel {
             default -> new MenuLevel( map);
         };
     }
+
+    public boolean isSelectable() {
+        return type.equals(MenuType.option) || type.equals(MenuType.value);
+    }
+
     protected MenuLevel(Map<String, Object> map) {
         Object stringType = map.get("type");
         this.type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
@@ -31,6 +37,7 @@ public class MenuLevel {
         String eventParam = (String) map.get("event");
         this.event = eventParam==null?this.text:eventParam;
         this.leave = (String) map.get("leave");
+        this.persistence = map.get("persistence")!=null? (Boolean) map.get("persistence"):false;
         Object active = map.get("active");
         if (active!=null) {
             this.activeItemIndex = (Integer) active;
@@ -73,6 +80,13 @@ public class MenuLevel {
         activeItemIndex =0;
     }
 
+    public void setParam(String param) {
+        items.stream()
+                .filter(menuLevel -> menuLevel.event.equals(param))
+                .findFirst()
+                .ifPresent(menuLevel -> activeItemIndex = items.indexOf(menuLevel));
+    }
+
     public String getText() {
         return text;
     }
@@ -89,5 +103,11 @@ public class MenuLevel {
         return getActiveItem()==null?"":getActiveItem().event;
     }
 
+    public boolean isPersistence() {
+        return persistence;
+    }
 
+    public void setPersistence(boolean persistence) {
+        this.persistence = persistence;
+    }
 }
