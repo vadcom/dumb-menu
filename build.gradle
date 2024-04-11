@@ -7,6 +7,7 @@ group 'link.sigma5'
 version '1.0-SNAPSHOT'
 description 'Core menu'
 
+
 repositories {
     //mavenLocal()
     mavenCentral()
@@ -23,6 +24,10 @@ publishing {
             groupId 'link.sigma5'
             artifactId 'dumb-menu'
             from components.java
+            pom {
+                name = 'Dumb menu'
+                description = 'Library for creating a menu'
+            }
         }
     }
 }
