@@ -1,5 +1,8 @@
 package link.sigma5.menu;
 
+/**
+ * Menu action event
+ */
 public enum MenuAction {
     Enter,  // Activate menu item
     Back,   // Go back to previous level

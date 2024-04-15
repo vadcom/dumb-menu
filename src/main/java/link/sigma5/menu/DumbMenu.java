@@ -10,6 +10,9 @@ import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
+/**
+ * DumbMenu is a simple menu system that can be used to create a menu system from a yaml file.
+ */
 public class DumbMenu {
     enum DrawMode {AllLevels, LastLevel}
 
@@ -20,10 +23,21 @@ public class DumbMenu {
 
     Preferences prefs = Preferences.userNodeForPackage(DumbMenu.class);
 
+    /**
+     * Create a new DumbMenu from a yaml file.
+     * @param resource resource file    (e.g. "menu.yaml")
+     * @param listener  listener for menu events
+     * @throws IOException if the resource file is not found
+     */
     public DumbMenu(String resource, MenuListener listener) throws IOException {
         this(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(resource))), listener);
     }
 
+    /**
+     * Create a new DumbMenu from a yaml file.
+     * @param inStream input stream
+     * @param listener listener for menu events
+     */
     public DumbMenu(Reader inStream, MenuListener listener) {
         Yaml yaml = new Yaml();
         this.mainLevel = MenuLevel.create(yaml.load(inStream));

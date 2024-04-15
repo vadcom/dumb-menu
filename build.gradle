@@ -4,8 +4,13 @@ plugins {
 }
 
 group 'link.sigma5'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 description 'Core menu'
+
+
+task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+}
 
 
 repositories {
@@ -23,7 +28,12 @@ publishing {
         maven(MavenPublication) {
             groupId 'link.sigma5'
             artifactId 'dumb-menu'
+            version '1.0.0'
             from components.java
+            artifacts {
+                archives jar
+//                archives myJavadocs
+            }
             pom {
                 name = 'Dumb menu'
                 description = 'Library for creating a menu'

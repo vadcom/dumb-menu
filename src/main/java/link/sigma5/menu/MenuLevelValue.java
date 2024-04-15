@@ -1,7 +1,10 @@
 package link.sigma5.menu;
 
 import java.util.Map;
-
+/**
+ * Represents level of menu with a value
+ *
+ */
 public class MenuLevelValue extends MenuLevel{
 
     int from;
