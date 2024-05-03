@@ -55,7 +55,7 @@ public class DumbMenu {
                 if (item.isPersistence()) {
                     item.setParam(prefs.get(item.event, item.getParam()));
                 }
-                listener.onEvent(new MenuEvent(item.event, item.getParam()));
+                listener.onEvent(new MenuEvent(item.event, item.getParam(), item));
             } else if (MenuType.submenu.equals(item.type)) {
                 traversOptions(item);
             }
@@ -70,7 +70,7 @@ public class DumbMenu {
                 switch (activeItem.type) {
 
                     case action -> {
-                        listener.onEvent(new MenuEvent(activeItem.event, ""));
+                        listener.onEvent(new MenuEvent(activeItem.event, "", activeItem));
                     }
                     case submenu -> {
                         activeItem.resetActive();
@@ -79,7 +79,7 @@ public class DumbMenu {
                     case option, value -> {
                         activeItem.next();
                         prefs.put(activeItem.event, activeItem.getParam());
-                        listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
+                        listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam(),activeItem));
                     }
                 }
             }
@@ -95,14 +95,14 @@ public class DumbMenu {
                 if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.next();
                     prefs.put(activeItem.event, activeItem.getParam());
-                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
+                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam(),activeItem));
                 }
             }
             case ScrollPrevious -> {
                 if (activeItem.type.equals(MenuType.option) || activeItem.type.equals(MenuType.value)) {
                     activeItem.previous();
                     prefs.put(activeItem.event, activeItem.getParam());
-                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam()));
+                    listener.onEvent(new MenuEvent(activeItem.event, activeItem.getParam(),activeItem));
                 }
             }
         }

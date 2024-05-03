@@ -36,8 +36,15 @@ public class SimpleMenu extends Frame implements MenuListener, KeyListener {
     @Override
     public void onEvent(MenuEvent event) {
         switch (event.event()) {
+            case "run" -> JOptionPane.showMessageDialog(this, "You have ran something");
             case "exit" -> dispose();
             case "Option" -> setOption(event.param());
+            case "changeName" -> {
+                String name = JOptionPane.showInputDialog("Enter your name");
+                if (name != null) {
+                    event.level().setValue(name);
+                }
+            }
         }
     }
 

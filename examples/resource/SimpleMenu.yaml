@@ -23,5 +23,10 @@ items:
     default: 5
     from: 0
     to: 10
+  - text: Your Name
+    event: changeName
+    value: John Doe
+    type: action
+    persistence: Yes
   - text: Exit
     event : exit

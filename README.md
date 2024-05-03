@@ -10,6 +10,7 @@ The event is raised when the user selects the item.
 
 ```yaml
 text: Text to display before the menu
+value: Text to display after the menu text (optional)
 leave: Event raised when the user leaves the menu
 type: Type of the menu (action, submenu, option, value, custom)
 items:

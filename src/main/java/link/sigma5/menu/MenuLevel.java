@@ -10,6 +10,7 @@ import java.util.Map;
 public class MenuLevel {
     MenuType type; // How to draw submenu items
     String text;
+    String value; // By default it's menu option value
     String event; // By default it's menu text
     String leave; // By default it's menu text
     boolean persistence; // True if we need to save this value
@@ -34,6 +35,8 @@ public class MenuLevel {
         Object stringType = map.get("type");
         this.type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
         this.text = (String) map.get("text");
+        String valueString = (String) map.get("value");
+        this.value = valueString==null?"":valueString;
         String eventParam = (String) map.get("event");
         this.event = eventParam==null?this.text:eventParam;
         this.leave = (String) map.get("leave");
@@ -92,7 +95,7 @@ public class MenuLevel {
     }
 
     public MenuItemView getItemView(boolean active) {
-        return new MenuItemView(active, getText(), type.equals(MenuType.option)?items.get(activeItemIndex).getText():"");
+        return new MenuItemView(active, getText(), type.equals(MenuType.option)?items.get(activeItemIndex).getText():getValue());
     }
 
     List<MenuLevel> getItems() {
@@ -109,5 +112,13 @@ public class MenuLevel {
 
     public void setPersistence(boolean persistence) {
         this.persistence = persistence;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
