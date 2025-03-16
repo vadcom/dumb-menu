@@ -20,7 +20,7 @@ items:
     event: Event raised when the user selects the item    
 ```
 
-Look at the [example menu](examples/resource/SimpleMenu.yaml) file for more details.
+Look at the [example menu](examples/resource/link.sigma5.menu.SimpleMenu.yaml) file for more details.
 
 Set persistence to Yes to save option or value.
 

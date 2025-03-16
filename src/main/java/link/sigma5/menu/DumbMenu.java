@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Objects;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
@@ -14,9 +15,9 @@ import java.util.prefs.Preferences;
  * DumbMenu is a simple menu system that can be used to create a menu system from a yaml file.
  */
 public class DumbMenu {
-    enum DrawMode {AllLevels, LastLevel}
+    public enum DrawMode {AllLevels, LastLevel}
 
-    Stack<MenuLevel> levels = new Stack<>();
+    Deque<MenuLevel> levels = new ArrayDeque<>();
     MenuLevel mainLevel;
     MenuListener listener;
     DrawMode drawMode = DrawMode.LastLevel;
@@ -42,7 +43,7 @@ public class DumbMenu {
         Yaml yaml = new Yaml();
         this.mainLevel = MenuLevel.create(yaml.load(inStream));
         this.listener = listener;
-        levels.push(mainLevel);
+        levels.addFirst(mainLevel);
     }
 
     public void init() {
@@ -63,7 +64,7 @@ public class DumbMenu {
     }
 
     public void performAction(MenuAction menuAction) {
-        var activeLevel = levels.peek();
+        var activeLevel = levels.getFirst();
         var activeItem = activeLevel.getActiveItem();
         switch (menuAction) {
             case Enter -> {
@@ -74,7 +75,7 @@ public class DumbMenu {
                     }
                     case submenu -> {
                         activeItem.resetActive();
-                        levels.push(activeItem);
+                        levels.addFirst(activeItem);
                     }
                     case option, value -> {
                         activeItem.next();
@@ -84,7 +85,7 @@ public class DumbMenu {
                 }
             }
             case Back -> {
-                MenuLevel menuLevel = levels.pop();
+                MenuLevel menuLevel = levels.removeFirst();
                 if (menuLevel.leave != null) {
                     listener.onEvent(new MenuEvent(menuLevel.leave));
                 }
@@ -111,9 +112,9 @@ public class DumbMenu {
 
     public void drawMenu(Consumer<MenuLevel> drawer) {
         if (DrawMode.AllLevels.equals(drawMode)) {
-            levels.forEach(drawer::accept);
+            levels.forEach(drawer);
         } else {
-            drawer.accept(levels.peek());
+            drawer.accept(levels.getFirst());
         }
     }
 

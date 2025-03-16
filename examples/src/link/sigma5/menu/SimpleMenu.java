@@ -1,4 +1,4 @@
-import link.sigma5.menu.*;
+package link.sigma5.menu;
 
 import javax.swing.*;
 import java.awt.*;

@@ -28,7 +28,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'link.sigma5'
             artifactId 'dumb-menu'
-            version '1.0.0'
+            version '1.0.1'
             from components.java
             artifacts {
                 archives jar
