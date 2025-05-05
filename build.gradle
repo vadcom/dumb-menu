@@ -1,14 +1,19 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'signing'
 }
 
 group 'link.sigma5'
-version '1.0.0'
+version '1.1.0'
 description 'Core menu'
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
-task myJavadocs(type: Javadoc) {
+tasks.register('myJavadocs', Javadoc) {
     source = sourceSets.main.allJava
 }
 
@@ -25,18 +30,39 @@ dependencies {
 }
 publishing {
     publications {
-        maven(MavenPublication) {
-            groupId 'link.sigma5'
-            artifactId 'dumb-menu'
-            version '1.0.1'
+        mavenJava(MavenPublication) {
             from components.java
-            artifacts {
-                archives jar
-//                archives myJavadocs
-            }
             pom {
                 name = 'Dumb menu'
                 description = 'Library for creating a menu'
+//                url 'https://github.com/vadcom/dumb-menu'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'vadcom'
+                        name = 'Vadim Dubina'
+                        email = 'vadcomys@gmail.com'
+                    }
+                }
+
+                repositories {
+                    maven {
+                        name = "OSSRH"
+                        url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                        credentials {
+                            username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                            password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
+                        }
+                    }
+                }
+
+
+
             }
         }
     }
