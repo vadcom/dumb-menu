@@ -1,0 +1,1 @@
+- Possibility to update values in options 
