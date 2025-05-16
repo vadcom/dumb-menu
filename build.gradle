@@ -5,6 +5,7 @@ plugins {
 }
 
 group 'link.sigma5'
+archivesBaseName = 'dumb-menu'
 version '1.1.0'
 description 'Core menu'
 
@@ -19,7 +20,6 @@ tasks.register('myJavadocs', Javadoc) {
 
 
 repositories {
-    //mavenLocal()
     mavenCentral()
 }
 
@@ -28,14 +28,32 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
     implementation 'org.yaml:snakeyaml:2.0'
 }
+
 publishing {
+
+        repositories {
+            maven {
+                name = 'sonatype'
+                url = version.endsWith('SNAPSHOT') ?
+                        'https://s01.oss.sonatype.org/content/repositories/snapshots/' :
+                        'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                credentials {
+                    username = project.findProperty('ossrhUsername') ?: System.getenv('OSSRH_USERNAME')
+                    password = project.findProperty('ossrhPassword') ?: System.getenv('OSSRH_PASSWORD')
+                    println "Using username for publishing: $username"
+                    println "Using pass for publishing: $password"
+                }
+            }
+        }
+
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifactId = 'dumb-menu'
             pom {
                 name = 'Dumb menu'
                 description = 'Library for creating a menu'
-//                url 'https://github.com/vadcom/dumb-menu'
+                url ='https://github.com/vadcom/dumb-menu'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -50,23 +68,11 @@ publishing {
                     }
                 }
 
-                repositories {
-                    maven {
-                        name = "OSSRH"
-                        url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-                        credentials {
-                            username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
-                            password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
-                        }
-                    }
-                }
-
-
-
             }
         }
     }
 }
+
 
 test {
     useJUnitPlatform()
