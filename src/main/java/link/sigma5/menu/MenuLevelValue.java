@@ -9,40 +9,45 @@ public class MenuLevelValue extends MenuLevel{
 
     int from;
     int to;
-    int value;
+    int intValue;
 
-    protected MenuLevelValue(Map<String, Object> map) {
-        super(map);
+    protected MenuLevelValue(Map<String, Object> map,MenuListener listener) {
+        super(map,listener);
         this.type=MenuType.value;
         this.from = (Integer) map.get("from");
         this.to = (Integer) map.get("to");
-        this.value = (Integer) map.get("default");
+        this.intValue = (Integer) map.get("default");
     }
 
     @Override
     public void next() {
-        if (value<to) value++;
-        else value=from;
+        if (intValue <to) intValue++;
+        else intValue =from;
     }
 
     @Override
     public void previous() {
-        if (value>from) value--;
-        else value=to;
+        if (intValue >from) intValue--;
+        else intValue =to;
     }
 
     @Override
     public MenuItemView getItemView(boolean active) {
-        return new MenuItemView(active,getText(),String.valueOf(value));
+        return new MenuItemView(active,getText(),getValue());
+    }
+
+    @Override
+    public String getValue() {
+        return customValueEvent==null?String.valueOf(intValue): listener.onCustomValueEvent(new CustomValueEvent(customValueEvent,String.valueOf(intValue)));
     }
 
     @Override
     String getParam() {
-        return String.valueOf(value);
+        return String.valueOf(intValue);
     }
 
     @Override
     public void setParam(String param) {
-        value=Integer.parseInt(param);
+        intValue =Integer.parseInt(param);
     }
 }

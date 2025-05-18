@@ -41,7 +41,7 @@ public class DumbMenu {
      */
     public DumbMenu(Reader inStream, MenuListener listener) {
         Yaml yaml = new Yaml();
-        this.mainLevel = MenuLevel.create(yaml.load(inStream));
+        this.mainLevel = MenuLevel.create(yaml.load(inStream), listener);
         this.listener = listener;
         levels.addFirst(mainLevel);
     }

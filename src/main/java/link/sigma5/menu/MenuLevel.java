@@ -13,17 +13,19 @@ public class MenuLevel {
     String value; // By default it's menu option value
     String event; // By default it's menu text
     String leave; // By default it's menu text
+    String customValueEvent; // call this event to get custom text for the menu item
     boolean persistence; // True if we need to save this value
+    protected final MenuListener listener;
 
     List<MenuLevel> items;
     int activeItemIndex;
 
-    public static MenuLevel create(Map<String, Object> map) {
+    public static MenuLevel create(Map<String, Object> map,MenuListener listener) {
         Object stringType = map.get("type");
         MenuType type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
         return switch (type) {
-            case value ->  new MenuLevelValue(map);
-            default -> new MenuLevel( map);
+            case value ->  new MenuLevelValue(map,listener);
+            default -> new MenuLevel( map,listener);
         };
     }
 
@@ -31,7 +33,8 @@ public class MenuLevel {
         return type.equals(MenuType.option) || type.equals(MenuType.value);
     }
 
-    protected MenuLevel(Map<String, Object> map) {
+    protected MenuLevel(Map<String, Object> map,MenuListener listener) {
+        this.listener=listener;
         Object stringType = map.get("type");
         this.type = stringType == null ? MenuType.action : MenuType.valueOf((String) stringType);
         this.text = (String) map.get("text");
@@ -39,6 +42,7 @@ public class MenuLevel {
         this.value = valueString==null?"":valueString;
         String eventParam = (String) map.get("event");
         this.event = eventParam==null?this.text:eventParam;
+        this.customValueEvent = (String) map.get("valueEvent");
         this.leave = (String) map.get("leave");
         this.persistence = map.get("persistence")!=null? (Boolean) map.get("persistence"):false;
         Object active = map.get("active");
@@ -51,7 +55,7 @@ public class MenuLevel {
         Object itemsList = map.get("items");
         if (itemsList instanceof List list) {
             for (Map<String, Object> item : (List<Map<String, Object>>) list) {
-                items.add(MenuLevel.create(item));
+                items.add(MenuLevel.create(item,listener));
             }
         }
     }
@@ -95,7 +99,13 @@ public class MenuLevel {
     }
 
     public MenuItemView getItemView(boolean active) {
-        return new MenuItemView(active, getText(), type.equals(MenuType.option)?items.get(activeItemIndex).getText():getValue());
+        return new MenuItemView(active, getText(), type.equals(MenuType.option)? getOptionText() :getValue());
+    }
+
+    private String getOptionText() {
+        return items.get(activeItemIndex).value.isBlank()
+                ?items.get(activeItemIndex).getText()
+                :items.get(activeItemIndex).getValue();
     }
 
     List<MenuLevel> getItems() {
@@ -115,7 +125,7 @@ public class MenuLevel {
     }
 
     public String getValue() {
-        return value;
+        return customValueEvent==null?value: listener.onCustomValueEvent(new CustomValueEvent(customValueEvent,value));
     }
 
     public void setValue(String value) {

@@ -19,7 +19,8 @@ public class SimpleMenu extends Frame implements MenuListener, KeyListener {
         setBounds(50, 50, 500, 400);
         addKeyListener(this);
         setVisible(true);
-        add(this.optionsLabel = new JLabel());
+        this.optionsLabel = new JLabel();
+        add(optionsLabel);
         this.optionsLabel.setVerticalAlignment(SwingConstants.BOTTOM);
         this.optionsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.optionsLabel.setBackground(Color.gray);
@@ -46,6 +47,12 @@ public class SimpleMenu extends Frame implements MenuListener, KeyListener {
                 }
             }
         }
+    }
+
+    @Override
+    public String onCustomValueEvent(CustomValueEvent event) {
+        if (event.event().equals("three options")) return "Value is " + event.value();
+        return event.value();
     }
 
     @Override
