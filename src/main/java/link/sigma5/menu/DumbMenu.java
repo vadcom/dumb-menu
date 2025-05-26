@@ -22,27 +22,28 @@ public class DumbMenu {
     MenuListener listener;
     DrawMode drawMode = DrawMode.LastLevel;
 
-    Preferences prefs = Preferences.userNodeForPackage(DumbMenu.class);
+    private final Preferences prefs;
 
     /**
-     * Create a new DumbMenu from a yaml file.
+     * Create a new DumbMenu from a YAML file.
      * @param resource resource file    (e.g. "menu.yaml")
      * @param listener  listener for menu events
      * @throws IOException if the resource file is not found
      */
-    public DumbMenu(String resource, MenuListener listener) throws IOException {
-        this(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(resource))), listener);
+    public DumbMenu(String resource, MenuListener listener, Preferences prefsPreferences) throws IOException {
+        this(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(resource))), listener, prefsPreferences);
     }
 
     /**
-     * Create a new DumbMenu from a yaml file.
+     * Create a new DumbMenu from a YAML file.
      * @param inStream input stream
      * @param listener listener for menu events
      */
-    public DumbMenu(Reader inStream, MenuListener listener) {
+    public DumbMenu(Reader inStream, MenuListener listener, Preferences prefsPreferences) {
         Yaml yaml = new Yaml();
         this.mainLevel = MenuLevel.create(yaml.load(inStream), listener);
         this.listener = listener;
+        this.prefs = prefsPreferences;
         levels.addFirst(mainLevel);
     }
 

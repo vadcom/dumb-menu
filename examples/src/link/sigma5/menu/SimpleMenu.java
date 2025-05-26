@@ -5,12 +5,13 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 import static java.awt.event.KeyEvent.*;
 
 public class SimpleMenu extends Frame implements MenuListener, KeyListener {
 
-    private final DumbMenu menu = new DumbMenu("SimpleMenu.yaml", this);
+    private final DumbMenu menu = new DumbMenu("SimpleMenu.yaml", this, Preferences.userNodeForPackage(SimpleMenu.class));
     private final Font font = new Font("DIALOG", Font.BOLD, 26);
     private final JLabel optionsLabel;
 

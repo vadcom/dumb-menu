@@ -6,7 +6,7 @@ plugins {
 
 group 'link.sigma5'
 archivesBaseName = 'dumb-menu'
-version '1.1.0'
+version '1.2.0'
 description 'Core menu'
 
 java {
