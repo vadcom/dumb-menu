@@ -95,7 +95,7 @@ public class MenuLevel {
     }
 
     public String getText() {
-        return text;
+        return customValueEvent==null?text: listener.onCustomValueEvent(new CustomValueEvent(customValueEvent,text));
     }
 
     public MenuItemView getItemView(boolean active) {
